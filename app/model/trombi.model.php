@@ -33,6 +33,15 @@ function getStudentsByPage(PDO $pdo, int $numPage): array
     return $students;
 }
 
+function searchStudents(PDO $pdo, string $search) {
+    $searchWithWildCards = '%' . $search . '%';
+    $sql = "SELECT * FROM students WHERE firstname LIKE :search OR lastname LIKE :search";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":search", $searchWithWildCards);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
 function getNbPages(PDO $pdo): int
 {
     $sql = "SELECT count(*) FROM students";
